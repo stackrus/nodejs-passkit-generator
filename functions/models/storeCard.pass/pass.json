@@ -1,0 +1,25 @@
+{
+  "formatVersion": 1,
+  "passTypeIdentifier": "pass.com.rustam.node-passkit-generator",
+  "teamIdentifier": "86VKJB48Z9",
+  "barcode": {
+    "message": "",
+    "format": "PKBarcodeFormatQR",
+    "messageEncoding": "iso-8859-1"
+  },
+  "organizationName": "organizationName",
+  "description": "description",
+  "logoText": "logoText",
+  "foregroundColor": "rgb(255, 255, 255)",
+  "backgroundColor": "rgb(55, 117, 50)",
+  "storeCard": {
+    "primaryFields": [
+      {
+        "key": "balance",
+        "label": "Bonus points",
+        "value": 1000
+      }
+    ],
+    "auxiliaryFields": []
+  }
+}
