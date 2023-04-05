@@ -2,10 +2,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const FB_APPLE_PASSKIT_PROD =
-  "https://us-central1-node-passkit-generator.cloudfunctions.net/genericPass";
-const FB_APPLE_PASSKIT_DEV =
-  "http://localhost:5000/node-passkit-generator/us-central1/genericPass";
+import { api } from './api'
 
 const Input = ({ className, placeholder = "", ...props }) => {
   return (
@@ -71,16 +68,8 @@ const GeneriCard = ({}) => {
       textColor,
     };
 
-    const response = await fetch(FB_APPLE_PASSKIT_DEV, {
-      crossDomain: true,
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(params),
-    });
+    const data = await api.generatePass(params);
     setLoading(false);
-    const data = await response.json();
     console.log(data);
     toast.success("Passkit generated successfully");
   };
