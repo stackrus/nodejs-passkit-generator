@@ -60,7 +60,7 @@ const MainPage = () => {
           >
             Loyalty card
           </button>
-          <hr class="border h-6 bg-gray-300" />
+          <hr className="border h-6 bg-gray-300" />
           <button
             onClick={() => setCurrentTab(CARD_TYPES.GENERIC)}
             className={`${

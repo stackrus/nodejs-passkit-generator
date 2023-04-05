@@ -11,9 +11,11 @@ var axios = require("axios");
 
 var serviceAccount = require("./firebase_creds/serviceAccountKey.json");
 
+const fn = functions.region('europe-west1')
+
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  storageBucket: "node-passkit-generator.appspot.com",
+  storageBucket: "p11-loyalty-card.appspot.com",
 });
 
 const storage = getStorage();
@@ -27,7 +29,7 @@ const convertHexToRgb = (hex) => {
   return `rgb(${r},${g},${b})`;
 };
 
-exports.genericPass = functions.https.onRequest((request, response) => {
+exports.genericPass = fn.https.onRequest((request, response) => {
   cors(request, response, () => {
     PKPass.from(
       {
@@ -110,7 +112,7 @@ exports.genericPass = functions.https.onRequest((request, response) => {
   });
 });
 
-exports.storeCardPass = functions.https.onRequest((request, response) => {
+exports.storeCardPass = fn.https.onRequest((request, response) => {
   cors(request, response, () => {
     PKPass.from(
       {
@@ -177,7 +179,7 @@ exports.storeCardPass = functions.https.onRequest((request, response) => {
    * @returns {string} The pass class ID: `${issuerId}.${classSuffix}`
    */
   // exports.storeCardPassAndroid =  async createClass(issuerId, classSuffix) {
-  exports.storeCardPassAndroid =  functions.https.onRequest((request, response) => {
+  exports.storeCardPassAndroid =  fn.https.onRequest(async (request, response) => {
     // let response;
 
     // Check if the class exists
