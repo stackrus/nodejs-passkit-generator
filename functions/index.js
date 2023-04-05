@@ -11,7 +11,10 @@ var axios = require("axios");
 
 var serviceAccount = require("./firebase_creds/serviceAccountKey.json");
 
-const fn = functions.region('europe-west1')
+const fn = functions.region("europe-west1");
+
+// it should work but it doesn't -__-
+const IS_DEV = process.env.FUNCTIONS_EMULATOR === true;
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -91,10 +94,13 @@ exports.genericPass = fn.https.onRequest((request, response) => {
       newPass.addBuffer("thumbnail.png", buffer);
       newPass.addBuffer("thumbnail@2x.png", buffer);
       const bufferData = newPass.getAsBuffer();
-      fs.writeFileSync(
-        `generic_${"id" + Math.random().toString(16).slice(2)}.pkpass`,
-        bufferData
-      );
+
+      if (IS_DEV) {
+        fs.writeFileSync(
+          `tmp/generic_${"id" + Math.random().toString(16).slice(2)}.pkpass`,
+          bufferData
+        );
+      }
 
       storageRef
         .file(
@@ -140,17 +146,14 @@ exports.storeCardPass = fn.https.onRequest((request, response) => {
 
       newPass.setBarcodes("https://p11.co/");
 
-      // const resp = await axios.get(request.body.thumbnail, {
-      //   responseType: "arraybuffer",
-      // });
-      // const buffer = Buffer.from(resp.data, "utf-8");
-      // newPass.addBuffer("thumbnail.png", buffer);
-      // newPass.addBuffer("thumbnail@2x.png", buffer);
       const bufferData = newPass.getAsBuffer();
-      fs.writeFileSync(
-        `loyalty_${"id" + Math.random().toString(16).slice(2)}.pkpass`,
-        bufferData
-      );
+
+      if (IS_DEV) {
+        fs.writeFileSync(
+          `tmp/loyalty_${"id" + Math.random().toString(16).slice(2)}.pkpass`,
+          bufferData
+        );
+      }
 
       storageRef
         .file(
@@ -167,68 +170,3 @@ exports.storeCardPass = fn.https.onRequest((request, response) => {
     });
   });
 });
-
-
-// [START createClass]
-  /**
-   * Create a class.
-   *
-   * @param {string} issuerId The issuer ID being used for this request.
-   * @param {string} classSuffix Developer-defined unique ID for this pass class.
-   *
-   * @returns {string} The pass class ID: `${issuerId}.${classSuffix}`
-   */
-  // exports.storeCardPassAndroid =  async createClass(issuerId, classSuffix) {
-  exports.storeCardPassAndroid =  fn.https.onRequest(async (request, response) => {
-    // let response;
-
-    // Check if the class exists
-    try {
-      response = await this.httpClient.request({
-        url: `${this.classUrl}/${issuerId}.${classSuffix}`,
-        method: "GET",
-      });
-
-      console.log(`Class ${issuerId}.${classSuffix} already exists!`);
-
-      return `${issuerId}.${classSuffix}`;
-    } catch (err) {
-      if (err.response && err.response.status !== 404) {
-        // Something else went wrong...
-        console.log(err);
-        return `${issuerId}.${classSuffix}`;
-      }
-    }
-
-    // See link below for more information on required properties
-    // https://developers.google.com/wallet/retail/loyalty-cards/rest/v1/loyaltyclass
-    let newClass = {
-      id: `${issuerId}.${classSuffix}`,
-      issuerName: "Jari Toivonen",
-      reviewStatus: "UNDER_REVIEW",
-      programName: "CardPlus Oy",
-      programLogo: {
-        sourceUri: {
-          uri: "https://korttilinna.fi/images/category/uutiset/CardPlus_logo_cmyk.png",
-        },
-        contentDescription: {
-          defaultValue: {
-            language: "en-US",
-            value: "CardPlus Oy description",
-          },
-        },
-      },
-    };
-
-    response = await this.httpClient.request({
-      url: this.classUrl,
-      method: "POST",
-      data: newClass,
-    });
-
-    console.log("Class insert response");
-    console.log(response);
-
-    return `${issuerId}.${classSuffix}`;
-  })
-  // [END createClass]

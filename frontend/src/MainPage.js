@@ -1,10 +1,6 @@
 import { useState } from "react";
 import GeneriCard from "./GenericCard";
 import LoyaltyCard from "./LoyaltyCard";
-const FB_APPLE_PASSKIT_PROD =
-  "https://us-central1-node-passkit-generator.cloudfunctions.net/pass";
-const FB_APPLE_PASSKIT_DEV =
-  "http://localhost:5000/node-passkit-generator/us-central1/pass";
 
 const CARD_TYPES = {
   LOYALTY: "Loyalty",

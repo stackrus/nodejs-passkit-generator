@@ -2,7 +2,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import { api } from './api'
+import { api } from "./api";
 
 const Input = ({ className, placeholder = "", ...props }) => {
   return (
@@ -68,7 +68,7 @@ const GeneriCard = ({}) => {
       textColor,
     };
 
-    const data = await api.generatePass(params);
+    const data = await api.genericPass(params);
     setLoading(false);
     console.log(data);
     toast.success("Passkit generated successfully");
