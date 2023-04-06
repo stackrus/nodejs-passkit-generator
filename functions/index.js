@@ -34,6 +34,10 @@ const convertHexToRgb = (hex) => {
 
 exports.genericPass = fn.https.onRequest((request, response) => {
   cors(request, response, () => {
+    const fileName = `generic_${
+      "id" + Math.random().toString(16).slice(2)
+    }.pkpass`;
+    const expirationDate = new Date(Date.now() + 60 * 60000);
     PKPass.from(
       {
         model: "./models/generic.pass",
@@ -45,7 +49,7 @@ exports.genericPass = fn.https.onRequest((request, response) => {
         },
       },
       {
-        serialNumber: "id" + Math.random().toString(16).slice(2),
+        serialNumber: "id" + Math.random().toString(16),
         webServiceURL: "https://example.com/passes/",
         authenticationToken: "vxwxd7J8AlNNFPS8k0a0FfUFtq0ewzFdc",
         logoText: "new logo text",
@@ -96,29 +100,41 @@ exports.genericPass = fn.https.onRequest((request, response) => {
       const bufferData = newPass.getAsBuffer();
 
       if (IS_DEV) {
-        fs.writeFileSync(
-          `tmp/generic_${"id" + Math.random().toString(16).slice(2)}.pkpass`,
-          bufferData
-        );
+        fs.writeFileSync(`tmp/${fileName}}`, bufferData);
       }
 
       storageRef
-        .file(
-          `passes/generic_${"id" + Math.random().toString(16).slice(2)}.pkpass`
-        )
+        .file(`passes/${fileName}`)
         .save(bufferData, (error) => {
           if (!error) {
             console.log("Pass was uploaded successfully");
-            response
-              .status(200)
-              .json({ message: "Pass was uploaded successfully" });
           }
+        })
+        .then(async () => {
+          const signedUrlResponse = await storageRef
+            .file(`passes/${fileName}`)
+            .getSignedUrl({
+              action: "read",
+              expires: expirationDate,
+            });
+
+          const assetUrl = signedUrlResponse[0];
+
+          response.status(200).json({
+            message: "Generic pass link",
+            assetUrl,
+          });
         });
     });
   });
 });
 
 exports.storeCardPass = fn.https.onRequest((request, response) => {
+  const fileName = `loyalty_${
+    "id" + Math.random().toString(16).slice(2)
+  }.pkpass`;
+  const expirationDate = new Date(Date.now() + 60 * 60000);
+
   cors(request, response, () => {
     PKPass.from(
       {
@@ -131,13 +147,18 @@ exports.storeCardPass = fn.https.onRequest((request, response) => {
         },
       },
       {
-        serialNumber: "id" + Math.random().toString(16).slice(2),
+        serialNumber: fileName,
         webServiceURL: "https://example.com/passes/",
         authenticationToken: "vxwxd7J8AlNNFPS8k0a0FfUFtq0ewzFdc",
         description: "Loyalty card",
+        logoText: "Perspektives",
       }
     ).then(async (newPass) => {
-      newPass.logoText = request.body.name;
+      newPass.secondaryFields.push({
+        key: "secondary",
+        label: "Name",
+        value: request.body.name,
+      });
       newPass.auxiliaryFields.push({
         key: "auxiliary",
         label: "email",
@@ -156,16 +177,26 @@ exports.storeCardPass = fn.https.onRequest((request, response) => {
       }
 
       storageRef
-        .file(
-          `passes/loyalty_${"id" + Math.random().toString(16).slice(2)}.pkpass`
-        )
-        .save(bufferData, (error) => {
+        .file(`passes/${fileName}`)
+        .save(bufferData, async (error) => {
           if (!error) {
             console.log("Pass was uploaded successfully");
-            response
-              .status(200)
-              .json({ message: "Pass was uploaded successfully" });
           }
+        })
+        .then(async () => {
+          const signedUrlResponse = await storageRef
+            .file(`passes/${fileName}`)
+            .getSignedUrl({
+              action: "read",
+              expires: expirationDate,
+            });
+
+          const assetUrl = signedUrlResponse[0];
+
+          response.status(200).json({
+            message: "Loyalty pass link",
+            assetUrl,
+          });
         });
     });
   });

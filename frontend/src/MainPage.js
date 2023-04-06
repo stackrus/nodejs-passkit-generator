@@ -35,10 +35,8 @@ const paramsExample = {
       label: "auxiliary label 1",
     },
   ],
-  //   backgroundColor: "000000",
   backgroundColor: "FFFFFF",
   textColor: "000000",
-  //   textColor: "FFFFFF",
 };
 
 const MainPage = () => {

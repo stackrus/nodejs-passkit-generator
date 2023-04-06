@@ -9,7 +9,6 @@
   },
   "organizationName": "organizationName",
   "description": "description",
-  "logoText": "logoText",
   "foregroundColor": "rgb(255, 255, 255)",
   "backgroundColor": "rgb(55, 117, 50)",
   "storeCard": {
@@ -20,6 +19,7 @@
         "value": 1000
       }
     ],
+    "secondaryFields": [],
     "auxiliaryFields": []
   }
 }

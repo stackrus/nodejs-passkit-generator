@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { api } from './api'
+import { api } from "./api";
 
 const Input = ({ className, placeholder = "", ...props }) => {
   return (
@@ -18,8 +18,10 @@ const LoyaltyCard = () => {
   const [isLoading, setLoading] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [downloadUrl, setDownloadUrl] = useState("");
 
   const generateApplePasskit = async () => {
+    setDownloadUrl("");
     setLoading(true);
 
     const params = {
@@ -28,9 +30,9 @@ const LoyaltyCard = () => {
     };
 
     const data = await api.storeCardPass(params);
+    setDownloadUrl(data.assetUrl);
     setLoading(false);
 
-    console.log(data);
     toast.success("Passkit generated successfully");
   };
 
@@ -58,10 +60,22 @@ const LoyaltyCard = () => {
         onClick={generateApplePasskit}
         disabled={isLoading}
         type="button"
-        className="self-center mt-6 w-[18rem] rounded-lg border border-blue-500 bg-blue-500 px-5 py-1.5 text-center text-sm font-medium text-white shadow-sm transition-all hover:border-blue-700 hover:bg-blue-700 focus:ring focus:ring-blue-200 disabled:cursor-not-allowed disabled:border-blue-300 disabled:bg-blue-300"
+        className="self-center h-10 mt-6 w-[18rem] rounded-lg border border-blue-500 bg-blue-500 px-5 py-1.5 text-center text-sm font-medium text-white shadow-sm transition-all hover:border-blue-700 hover:bg-blue-700 focus:ring focus:ring-blue-200 disabled:cursor-not-allowed disabled:border-blue-300 disabled:bg-blue-300"
       >
-        Generate a passkit
+        Generate a new passkit
       </button>
+
+      {downloadUrl && (
+        <div className="mt-10 flex flex-col space-y-3 items-center">
+          <Input defaultValue={downloadUrl} className="w-full" />
+          <a
+            className="w-[12rem] rounded-lg border border-green-500 bg-green-500 px-5 py-1.5 text-center text-sm font-medium text-white shadow-sm transition-all hover:border-green-700 hover:bg-green-700 focus:ring focus:ring-green-200 disabled:cursor-not-allowed disabled:border-green-300 disabled:bg-green-300"
+            href={downloadUrl}
+          >
+            Download the pass
+          </a>
+        </div>
+      )}
     </div>
   );
 };

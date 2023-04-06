@@ -30,11 +30,14 @@ const GeneriCard = ({}) => {
   const [bgColor, setBgColor] = useState("FFFFFF");
   const [textColor, setTextColor] = useState("000000");
   const [qrText, setQrText] = useState("https://p11.co");
+  const [downloadUrl, setDownloadUrl] = useState("");
+
   const [thumbnail, setThumbnail] = useState(
     "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
   );
 
   const generateApplePasskit = async () => {
+    setDownloadUrl("");
     setLoading(true);
 
     const params = {
@@ -69,19 +72,19 @@ const GeneriCard = ({}) => {
     };
 
     const data = await api.genericPass(params);
+    setDownloadUrl(data.assetUrl);
     setLoading(false);
-    console.log(data);
     toast.success("Passkit generated successfully");
   };
 
   return (
-    <>
-      <div className="w-[30rem] h-[40rem] mb-4 bg-slate-50 border rounded-md p-4 flex flex-col">
+    <div className="flex space-x-10">
+      <div className="w-[30rem] h-[34rem] mb-4 bg-slate-50 border rounded-md p-4 flex flex-col">
         <div className="flex space-x-4 items-center">
           <div className="w-10 h-10 bg-slate-400">Icon</div>
           <Input className="h-6" placeholder="Main label" disabled />
         </div>
-        <div className="flex space-x-8 mt-14 justify-between items-center">
+        <div className="flex space-x-8 mt-8 justify-between items-center">
           <div className="flex flex-col space-y-2">
             <Input
               value={primaryLabel}
@@ -156,24 +159,39 @@ const GeneriCard = ({}) => {
           </div>
         </div>
 
-        <div className="mt-20 flex flex-col items-center justify-center space-y-4">
+        <div className="mt-6 flex flex-col items-center justify-center space-y-4">
           <Input
             value={qrText}
             onChange={(e) => setQrText(e.target.value)}
             placeholder="QR code link"
           />
-          <div className="bg-slate-700 h-[7rem] w-[7rem]"></div>
+          <div className="bg-slate-700 h-[6rem] w-[6rem]" />
         </div>
       </div>
-      <button
-        onClick={generateApplePasskit}
-        disabled={isLoading}
-        type="button"
-        className="w-[18rem] rounded-lg border border-blue-500 bg-blue-500 px-5 py-1.5 text-center text-sm font-medium text-white shadow-sm transition-all hover:border-blue-700 hover:bg-blue-700 focus:ring focus:ring-blue-200 disabled:cursor-not-allowed disabled:border-blue-300 disabled:bg-blue-300"
-      >
-        Generate a passkit
-      </button>
-    </>
+
+      <div className="flex flex-col items-center justify-start">
+        <button
+          onClick={generateApplePasskit}
+          disabled={isLoading}
+          type="button"
+          className="w-[18rem] h-10 rounded-lg border border-blue-500 bg-blue-500 px-5 py-1.5 text-center text-sm font-medium text-white shadow-sm transition-all hover:border-blue-700 hover:bg-blue-700 focus:ring focus:ring-blue-200 disabled:cursor-not-allowed disabled:border-blue-300 disabled:bg-blue-300"
+        >
+          Generate a new passkit
+        </button>
+
+        {downloadUrl && (
+          <div className="mt-10 flex flex-col space-y-3 items-center">
+            <Input defaultValue={downloadUrl} className="w-full" />
+            <a
+              className="w-[12rem] rounded-lg border border-green-500 bg-green-500 px-5 py-1.5 text-center text-sm font-medium text-white shadow-sm transition-all hover:border-green-700 hover:bg-green-700 focus:ring focus:ring-green-200 disabled:cursor-not-allowed disabled:border-green-300 disabled:bg-green-300"
+              href={downloadUrl}
+            >
+              Download the pass
+            </a>
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 
