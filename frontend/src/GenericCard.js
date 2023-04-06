@@ -71,7 +71,7 @@ const GeneriCard = ({}) => {
       textColor,
     };
 
-    const data = await api.genericPass(params);
+    const data = await api.genericPassApple(params);
     setDownloadUrl(data.assetUrl);
     setLoading(false);
     toast.success("Passkit generated successfully");
@@ -181,7 +181,11 @@ const GeneriCard = ({}) => {
 
         {downloadUrl && (
           <div className="mt-10 flex flex-col space-y-3 items-center">
-            <Input defaultValue={downloadUrl} className="w-full" />
+            <Input
+              defaultValue={downloadUrl}
+              value={downloadUrl}
+              className="w-full"
+            />
             <a
               className="w-[12rem] rounded-lg border border-green-500 bg-green-500 px-5 py-1.5 text-center text-sm font-medium text-white shadow-sm transition-all hover:border-green-700 hover:bg-green-700 focus:ring focus:ring-green-200 disabled:cursor-not-allowed disabled:border-green-300 disabled:bg-green-300"
               href={downloadUrl}

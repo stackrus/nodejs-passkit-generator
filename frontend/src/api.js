@@ -21,10 +21,13 @@ const request = async (path, params) => {
 
 export const api = {
   request,
-  storeCardPass: async (params) => {
-    return request("storeCardPass", params);
+  loyaltyCardApple: async (params) => {
+    return request("loyaltyCardApple", params);
   },
-  genericPass: async (params) => {
-    return request("genericPass", params);
+  genericPassApple: async (params) => {
+    return request("genericPassApple", params);
+  },
+  loyaltyCardAndroid: async (params) => {
+    return request("loyaltyCardAndroid", params);
   },
 };

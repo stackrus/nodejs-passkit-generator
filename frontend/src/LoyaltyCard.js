@@ -18,10 +18,12 @@ const LoyaltyCard = () => {
   const [isLoading, setLoading] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [downloadUrl, setDownloadUrl] = useState("");
+  const [downloadUrlApple, setDownloadUrlApple] = useState("");
+  const [downloadUrlAndroid, setDownloadUrlAndroid] = useState("");
 
   const generateApplePasskit = async () => {
-    setDownloadUrl("");
+    setDownloadUrlApple("");
+    setDownloadUrlAndroid("");
     setLoading(true);
 
     const params = {
@@ -29,11 +31,14 @@ const LoyaltyCard = () => {
       email,
     };
 
-    const data = await api.storeCardPass(params);
-    setDownloadUrl(data.assetUrl);
+    const applePass = await api.loyaltyCardApple(params);
+    const androidPass = await api.loyaltyCardAndroid(params);
+
+    setDownloadUrlApple(applePass.assetUrl);
+    setDownloadUrlAndroid(androidPass.assetUrl);
     setLoading(false);
 
-    toast.success("Passkit generated successfully");
+    toast.success("Passkits were generated successfully");
   };
 
   return (
@@ -65,17 +70,29 @@ const LoyaltyCard = () => {
         Generate a new passkit
       </button>
 
-      {downloadUrl && (
-        <div className="mt-10 flex flex-col space-y-3 items-center">
-          <Input defaultValue={downloadUrl} className="w-full" />
-          <a
-            className="w-[12rem] rounded-lg border border-green-500 bg-green-500 px-5 py-1.5 text-center text-sm font-medium text-white shadow-sm transition-all hover:border-green-700 hover:bg-green-700 focus:ring focus:ring-green-200 disabled:cursor-not-allowed disabled:border-green-300 disabled:bg-green-300"
-            href={downloadUrl}
-          >
-            Download the pass
-          </a>
-        </div>
-      )}
+      <div className="flex space-x-2 items-center justify-center">
+        {downloadUrlApple && (
+          <div className="mt-10 flex flex-col space-y-3 items-center">
+            <a
+              className="w-full rounded-lg border border-gray-500 bg-gray-500 px-5 py-1.5 text-center text-sm font-medium text-white shadow-sm transition-all hover:border-gray-700 hover:bg-gray-700 focus:ring focus:ring-gray-200 disabled:cursor-not-allowed disabled:border-gray-300 disabled:bg-gray-300"
+              href={downloadUrlApple}
+            >
+              Download Apple pass 🍎
+            </a>
+          </div>
+        )}
+
+        {downloadUrlAndroid && (
+          <div className="mt-10 flex flex-col space-y-3 items-center">
+            <a
+              className="w-full rounded-lg border border-green-500 bg-green-500 px-5 py-1.5 text-center text-sm font-medium text-white shadow-sm transition-all hover:border-green-700 hover:bg-green-700 focus:ring focus:ring-green-200 disabled:cursor-not-allowed disabled:border-green-300 disabled:bg-green-300"
+              href={downloadUrlAndroid}
+            >
+              Open Android pass 🤖
+            </a>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
